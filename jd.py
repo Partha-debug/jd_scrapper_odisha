@@ -17,7 +17,6 @@ business = [
     "Readymade-Garment-Dealers",
     "Textile-Dealers",
     "Cement-Dealers",
-    "Restaurants",
     "Steel-Dealers",
     "Paper-Dealers",
     "Automobile-Dealers",
