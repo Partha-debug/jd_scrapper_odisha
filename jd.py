@@ -16,6 +16,7 @@ places = [
 business = [
     "Readymade-Garment-Dealers",
     "Textile-Dealers",
+    "Restaurants",
     "Cement-Dealers",
     "Steel-Dealers",
     "Paper-Dealers",
@@ -57,7 +58,7 @@ def org_num_finder(stylesheet,orgs_data):
         org_phone = org.find_all('span',{'class':'mobilesv'})[::-1][:10][::-1]
         org_num = '+91'
         for element in org_phone:
-            org_num+=str(class_map[element.attrs['class'][1]])
+            org_num+=str(class_map[element.attrs['class'][1]] if element.attrs['class'][1] in class_map.keys() else '*')
 
         data['Phone'].append(org_num)
 
@@ -71,26 +72,25 @@ def org_name_finder(orgs_data):
     
     
 
-try:
-    for i in places:
-        for j in business:
-            for k in range(1,50):
+
+for i in places:
+    for j in business:
+        for k in range(1,40):
 
 
-                url= f"https://www.justdial.com/{i}/{j}/page-{k}"
+            url= f"https://www.justdial.com/{i}/{j}/page-{k}"
 
-                r = requests.get(url=url,headers={'User-Agent' : "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"})
-                parser = tinycss.make_parser('page3')
-                soup = BeautifulSoup(r.content, "html.parser")
-                raw_style = parser.parse_stylesheet_bytes(r.content)
-                orgs = soup.find_all('div',{'class':'col-sm-5 col-xs-8 store-details sp-detail paddingR0'})
-                data = defaultdict(list)
-                org_name_finder(orgs)
-                org_num_finder(raw_style,orgs)
-                print(data)
+            r = requests.get(url=url,headers={'User-Agent' : "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"})
+            parser = tinycss.make_parser('page3')
+            soup = BeautifulSoup(r.content, "html.parser")
+            raw_style = parser.parse_stylesheet_bytes(r.content)
+            orgs = soup.find_all('div',{'class':'col-sm-5 col-xs-8 store-details sp-detail paddingR0'})
+            data = defaultdict(list)
+            org_name_finder(orgs)
+            org_num_finder(raw_style,orgs)
+            print(data)
 
-                df = pd.DataFrame(data)
-                df.to_csv(f"{i}_{j}.csv", mode='a', index=False, header=False)
-except:
-    pass
+            df = pd.DataFrame(data)
+            df.to_csv(f"{i}_{j}.csv", mode='a', index=False, header=False)
+
 
